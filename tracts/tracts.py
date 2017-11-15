@@ -11,7 +11,7 @@ public module members:
     user_config_dir
     user_cache_dir
     user_state_dir
-    user_log_dir
+    user_logs_dir
     site_data_dirs
     site_config_dirs
 
@@ -168,7 +168,7 @@ def user_state_dir(app_name=None, app_author=None, version=None, roaming=False, 
     return _get_folder('user_state', app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
-def user_log_dir(app_name=None, app_author=None, version=None, use_virtualenv=True, create=True):
+def user_logs_dir(app_name=None, app_author=None, version=None, use_virtualenv=True, create=True):
     """
     Return the full path to the user log dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -192,7 +192,7 @@ def user_log_dir(app_name=None, app_author=None, version=None, use_virtualenv=Tr
     Returns:
         str: the full path to the user log dir for this application.
     """
-    return _get_folder('user_log', app_name, app_author, version, False, use_virtualenv, create)[0]
+    return _get_folder('user_logs', app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
 def site_data_dirs(app_name=None, app_author=None, version=None, use_virtualenv=True, create=False):
@@ -266,7 +266,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
 
     Args:
         str folder_type: Folder type, must be one of
-            'user_data' | 'user_config' | 'user_state' | 'user_cache' | 'user_log' | 'site_data' | 'site_config'
+            'user_data' | 'user_config' | 'user_state' | 'user_cache' | 'user_logs' | 'site_data' | 'site_config'
         str app_name: Name of the app, the returned dir has os.path.basename == app_name
         str app_author: Name of app author, only used in Windows.
         str version: App version, appended to app_name
@@ -289,7 +289,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
             paths = [os.path.normpath(_get_win_folder(site=False, roaming=roaming, app_author=app_author))]
         elif folder_type == 'user_cache':
             # we'll follow the MSDN recommendation on local data, but since they're mum on caches,
-            # we'll put them in LOCAL_APPDATA/author_name/Caches.
+            # we'll put them in LOCAL_APPDATA/app_author/Caches.
             path = os.path.normpath(_get_win_folder(site=False, roaming=False, app_author=app_author))
             paths = [os.path.join(path, 'Caches')]
         elif folder_type == 'user_logs':
@@ -306,7 +306,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
             paths = [os.path.expanduser('~/Library/Application Support')]
         elif folder_type == 'user_cache':
             paths = [os.path.expanduser('~/Library/Caches')]
-        elif folder_type == 'user_log':
+        elif folder_type == 'user_logs':
             paths = [os.path.expanduser('~/Library/Logs')]
         elif folder_type in ['site_data', 'site_config']:
             paths = [os.path.expanduser('/Library/Application Support')]
@@ -322,7 +322,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
             paths = [os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))]
         elif folder_type == 'user_cache':
             paths = [os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))]
-        elif folder_type == 'user_log':
+        elif folder_type == 'user_logs':
             paths = [os.path.expanduser('~/.log')]
         elif folder_type == 'site_data':
             path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
