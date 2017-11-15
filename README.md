@@ -67,3 +67,8 @@ See the [documentation](# TODO) for more details and examples.
 ## License
 
 See [LICENSE.txt](LICENSE.txt)
+
+
+## Acknowledgement
+
+This project is inspired by and is derived from [appdirs](https://github.com/ActiveState/appdirs)
