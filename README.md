@@ -41,15 +41,16 @@ python setup.py install
 import tracts
 
 app_name = "my_app"
-user_data_dir = tracts.user_data_dir(app_name=app_name)
-user_cache_dir = tracts.user_cache_dir(app_name=app_name)
-user_logs_dir = tracts.user_logs_dir(app_name=app_name)
-user_config_dir = tracts.user_config_dir(app_name=app_name)
-user_state_dir = tracts.user_state_dir(app_name=app_name)
+app_author = "nakatomi-corp"
+user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author)
+user_cache_dir = tracts.user_cache_dir(app_name=app_name, app_author=app_author)
+user_logs_dir = tracts.user_logs_dir(app_name=app_name, app_author=app_author)
+user_config_dir = tracts.user_config_dir(app_name=app_name, app_author=app_author)
+user_state_dir = tracts.user_state_dir(app_name=app_name, app_author=app_author)
 
 # site specific directories, e.g. /usr/share
-site_data_dirs = tracts.site_data_dirs(app_name=app_name)
-site_config_dirs = tracts.site_config_dirs(app_name=app_name)
+site_data_dir = tracts.site_data_dir(app_name=app_name, app_author=app_author)
+site_config_dir = tracts.site_config_dir(app_name=app_name, app_author=app_author)
 ```
 
 If you are running inside of a virtualenv, *tracts* will return paths that are relative to that environment.
@@ -61,9 +62,10 @@ For example, suppose you have set up a virtual environment in `/home/username/en
 import tracts
 
 app_name = "my_app"
-user_data_dir = tracts.user_data_dir(app_name=app_name)
+app_author = "nakatomi-corp"
+user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author)
 # /home/username/env/data/my_app
-user_data_dir = tracts.user_data_dir(app_name=app_name, use_virtualenv=False)
+user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author, use_virtualenv=False)
 # /home/username/.local/share/my_app.
 ```
 

@@ -38,6 +38,7 @@ else:
 
 
 class TestTracts(unittest.TestCase):
+
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
         self.app_name = "test_app"
@@ -58,7 +59,7 @@ class TestTracts(unittest.TestCase):
     def _expected_base_paths(self):
         mac_os_app_support = os.path.expanduser('~/Library/Application Support/')
         mac_os_site_app_support = '/Library/Application Support'
-        base_names = {
+        base_paths = {
             'mac_os': {
                 'user_data': mac_os_app_support,
                 'user_config': mac_os_app_support,
@@ -82,14 +83,14 @@ class TestTracts(unittest.TestCase):
 
         # add virtualenv expectations. When there is no actual virtualenv, we expect the use_virtualenv parameter
         # to do nothing.
-        for paths in itervalues(base_names):
+        for paths in itervalues(base_paths):
             paths['user_data_venv'] = paths['user_data']
             paths['user_config_venv'] = paths['user_config']
             paths['user_state_venv'] = paths['user_state']
             paths['user_cache_venv'] = paths['user_cache']
             paths['user_log_venv'] = paths['user_log']
 
-        return base_names
+        return base_paths
 
     def _windows_base_paths(self):
         windows_username = os.getenv('username')
@@ -507,62 +508,116 @@ class TestTracts(unittest.TestCase):
     # site_data_tracts. Not testing create=True since we don't know if we have permissions.
     #####################################################
     def test_site_data_no_version_no_venv_no_create(self):
-        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
+        expected = os.path.join(self.base_paths[self.platform]['site_data'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_data_dirs(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=False, create=False))
+                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                              use_virtualenv=False, create=False))
 
     def test_site_data_no_version_venv_no_create(self):
-        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
+        expected = os.path.join(self.base_paths[self.platform]['site_data'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_data_dirs(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=True, create=False))
+                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                              use_virtualenv=True, create=False))
 
     def test_site_data_version_no_venv_no_create(self):
+        version = '1.0'
+        expected = os.path.join(self.base_paths[self.platform]['site_data'][0], '{}_{}'.format(self.app_name, version))
+        self.assertEqual(expected,
+                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=version,
+                                              use_virtualenv=False, create=False))
+
+    def test_site_data_version_venv_no_create(self):
+        version = '1.0'
+        expected = os.path.join(self.base_paths[self.platform]['site_data'][0], '{}_{}'.format(self.app_name, version))
+        self.assertEqual(expected,
+                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=version,
+                                              use_virtualenv=True, create=False))
+
+    def test_site_data_list_no_version_no_venv_no_create(self):
+        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
+        self.assertEqual(expected,
+                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                   use_virtualenv=False, create=False))
+
+    def test_site_data_list_no_version_venv_no_create(self):
+        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
+        self.assertEqual(expected,
+                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                   use_virtualenv=True, create=False))
+
+    def test_site_data_list_version_no_venv_no_create(self):
         version = "1.0"
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_data']]
         self.assertEqual(expected,
-                         tracts.site_data_dirs(self.app_name, app_author=self.app_author, version=version,
-                                               use_virtualenv=False, create=False))
+                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                                   use_virtualenv=False, create=False))
 
-    def test_site_data_version_venv_no_create(self):
+    def test_site_data_list_version_venv_no_create(self):
         version = '1.0'
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_data']]
-        result = tracts.site_data_dirs(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                       create=False)
+        result = tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                           use_virtualenv=True, create=False)
         self.assertEqual(expected, result)
 
     #####################################################
     # site_config_tracts. Not testing create=True since we don't know if we have permissions.
     #####################################################
     def test_site_config_no_version_no_venv_no_create(self):
-        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
+        expected = os.path.join(self.base_paths[self.platform]['site_config'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_config_dirs(self.app_name, app_author=self.app_author, version=None,
-                                                 use_virtualenv=False, create=False))
+                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                use_virtualenv=False, create=False))
 
     def test_site_config_no_version_venv_no_create(self):
-        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
+        expected = os.path.join(self.base_paths[self.platform]['site_config'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_config_dirs(self.app_name, app_author=self.app_author, version=None,
-                                                 use_virtualenv=True, create=False))
+                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                use_virtualenv=True, create=False))
 
     def test_site_config_version_no_venv_no_create(self):
+        version = '1.0'
+        expected = os.path.join(self.base_paths[self.platform]['site_config'][0],
+                                '{}_{}'.format(self.app_name, version))
+        self.assertEqual(expected,
+                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=False, create=False))
+
+    def test_site_config_version_venv_no_create(self):
+        version = '1.0'
+        expected = os.path.join(self.base_paths[self.platform]['site_config'][0],
+                                '{}_{}'.format(self.app_name, version))
+        self.assertEqual(expected,
+                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=True, create=False))
+
+    def test_site_config_list_no_version_no_venv_no_create(self):
+        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
+        self.assertEqual(expected,
+                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                     use_virtualenv=False, create=False))
+
+    def test_site_config_list_no_version_venv_no_create(self):
+        expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
+        self.assertEqual(expected,
+                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                     use_virtualenv=True, create=False))
+
+    def test_site_config_list_version_no_venv_no_create(self):
         version = "1.0"
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_config']]
         self.assertEqual(expected,
-                         tracts.site_config_dirs(self.app_name, app_author=self.app_author, version=version,
-                                                 use_virtualenv=False, create=False))
+                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                                     use_virtualenv=False, create=False))
 
-    def test_site_config_version_venv_no_create(self):
+    def test_site_config_list_version_venv_no_create(self):
         version = '1.0'
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_config']]
-        result = tracts.site_config_dirs(self.app_name, app_author=self.app_author, version=version,
-                                         use_virtualenv=True, create=False)
+        result = tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                             use_virtualenv=True, create=False)
         self.assertEqual(expected, result)
 
 
@@ -597,8 +652,19 @@ class TestTractsVirtualEnv(TestTracts):
             activate_script = os.path.join(self.virtualenv_dir, 'bin', 'activate_this.py')
         execfile(activate_script, dict(__file__=activate_script))
 
+    def tearDown(self):
+        if hasattr(sys, 'real_prefix'):
+            print '*' * 50
+            print sys.prefix
+            sys.prefix = sys.real_prefix
+            print sys.prefix
+            print '*' * 50
+        else:
+            sys.prefix = sys.base_prefix
+
 
 class TestTractsLinuxXDG(TestTracts):
+
     def setUp(self):
         self._setup_linux_xdg_vars()
 
@@ -628,6 +694,14 @@ class TestTractsLinuxXDG(TestTracts):
 
         return base_paths
 
+
+# class TestTractsWindowsExtra(TestTracts):
+#
+#     def test_user_data_no_app_author(self):
+#         if self.platform == 'windows':
+#             with self.assertRaises(RuntimeError):
+#                 tracts.user_data_dir(self.app_name, app_author=None)
+#
 
 if __name__ == '__main__':
     unittest.main()

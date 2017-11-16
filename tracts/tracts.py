@@ -12,8 +12,10 @@ public module members:
     user_cache_dir
     user_state_dir
     user_logs_dir
-    site_data_dirs
-    site_config_dirs
+    site_data_dir
+    site_config_dir
+    site_data_dir_list
+    site_config_dir_list
 
 This code is inspired by and builds on top of code from http://github.com/ActiveState/appdirs
 
@@ -195,7 +197,7 @@ def user_logs_dir(app_name, app_author, version=None, use_virtualenv=True, creat
     return _get_folder('user_logs', app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
-def site_data_dirs(app_name, app_author, version=None, use_virtualenv=True, create=False):
+def site_data_dir(app_name, app_author, version=None, use_virtualenv=True, create=False):
     """
     Return the full path to the OS wide data dir for this application.
 
@@ -206,7 +208,11 @@ def site_data_dirs(app_name, app_author, version=None, use_virtualenv=True, crea
         * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
         * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
 
-    For Unix, this is using the :bash:`$XDG_DATA_DIRS` default.
+    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+
+    .. Note::
+        On linux, the $XDG_DATA_DIRS environment variable may contain a list. `site_data_dir` returns the first
+        element of this list. If you want access to the whole list, use :func:`site_data_dir_list`
 
     .. WARNING::
         Do not use this on Windows Vista. See the Vista-Fail note above for why.
@@ -220,12 +226,42 @@ def site_data_dirs(app_name, app_author, version=None, use_virtualenv=True, crea
         bool create: If True, the folder is created if it does not exist before the path is returned.
 
     Returns:
-        list: A list of paths to the site data directories for this application.
+        str: the full path to the site data dir for this application.
+    """
+    return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)[0]
+
+
+def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=False):
+    """
+    Return the list of full path to the OS wide data directories for this application.
+
+    Typical site data directories are:
+        * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
+        * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
+        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+
+    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+
+    .. WARNING::
+        Do not use this on Windows Vista. See the Vista-Fail note above for why.
+
+    Args:
+        str app_name: Name of the application. Will be appended to the base user config path.
+        str app_author: Only used in Windows, name of the application author.
+        str version: If given, the application version identifier will be appended to the app_name.
+        bool use_virtualenv: If True and we're running inside of a virtualenv, return a path relative to that
+            environment.
+        bool create: If True, the folder is created if it does not exist before the path is returned.
+
+    Returns:
+        list: A list to the full paths for site data directories for this application.
     """
     return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)
 
 
-def site_config_dirs(app_name, app_author, version=None, use_virtualenv=True, create=True):
+def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
     """
     Return the full path to the OS wide config dir for this application.
 
@@ -238,6 +274,10 @@ def site_config_dirs(app_name, app_author, version=None, use_virtualenv=True, cr
 
     For Unix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
+    .. Note::
+        On linux, the $XDG_CONFIG_DIRS environment variable may contain a list. `site_config_dir` returns the first
+        element of this list. If you want access to the whole list, use :func:`site_config_dir_list`
+
     .. WARNING::
         Do not use this on Windows Vista. See the Vista-Fail note above for why.
 
@@ -250,7 +290,37 @@ def site_config_dirs(app_name, app_author, version=None, use_virtualenv=True, cr
         bool create: If True, the folder is created if it does not exist before the path is returned.
 
     Returns:
-        list: A list of paths to the site config directory for this application.
+        str: the full path to the site config dir for this application.
+    """
+    return _get_folder('site_config', app_name, app_author, version, False, use_virtualenv, create)[0]
+
+
+def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=True):
+    """
+    Return the list of full path to the OS wide data directories for this application.
+
+    Typical site data directories are:
+        * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
+        * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
+        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+
+    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+
+    .. WARNING::
+        Do not use this on Windows Vista. See the Vista-Fail note above for why.
+
+    Args:
+        str app_name: Name of the application. Will be appended to the base user config path.
+        str app_author: Only used in Windows, name of the application author.
+        str version: If given, the application version identifier will be appended to the app_name.
+        bool use_virtualenv: If True and we're running inside of a virtualenv, return a path relative to that
+            environment.
+        bool create: If True, the folder is created if it does not exist before the path is returned.
+
+    Returns:
+        list: A list to the full paths for site data directories for this application.
     """
     return _get_folder('site_config', app_name, app_author, version, False, use_virtualenv, create)
 
