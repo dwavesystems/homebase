@@ -39,7 +39,7 @@ else:
     LINUX = True
 
 
-def user_data_dir(app_name, app_author=None, version=None, roaming=False, use_virtualenv=True, create=True):
+def user_data_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
     """
     Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -64,8 +64,8 @@ def user_data_dir(app_name, app_author=None, version=None, roaming=False, use_vi
         str app_author: Only used in Windows when not in a virtualenv, name of the application author.
         str version: If given, the application version identifier will be appended to the app_name.
         bool roaming: roaming appdata directory. That means that for users on a Windows
-            network setup for roaming profiles, this user data will be synchronized on login. See
-            http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx for a discussion of issues.
+                      network setup for roaming profiles, this user data will be synchronized on login. See
+                      <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx> for a discussion of issues.
         bool use_virtualenv: If True and we're running inside of a virtualenv, return a path relative to that
             environment.
         bool create: If True, the folder is created if it does not exist before the path is returned.
@@ -76,7 +76,7 @@ def user_data_dir(app_name, app_author=None, version=None, roaming=False, use_vi
     return _get_folder('user_data', app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
-def user_config_dir(app_name, app_author=None, version=None, roaming=False, use_virtualenv=True, create=True):
+def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
     """
     Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -96,8 +96,8 @@ def user_config_dir(app_name, app_author=None, version=None, roaming=False, use_
         str app_author: Only used in Windows, name of the application author.
         str version: If given, the application version identifier will be appended to the app_name.
         bool roaming: roaming appdata directory. That means that for users on a Windows
-            network setup for roaming profiles, this user data will be synchronized on login. See
-            http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx for a discussion of issues.
+                      network setup for roaming profiles, this user data will be synchronized on login. See
+                      <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx> for a discussion of issues.
         bool use_virtualenv: If True and we're running inside of a virtualenv, return a path relative to that
             environment.
         bool create: If True, the folder is created if it does not exist before the path is returned.
@@ -108,7 +108,7 @@ def user_config_dir(app_name, app_author=None, version=None, roaming=False, use_
     return _get_folder('user_config', app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
-def user_cache_dir(app_name=None, app_author=None, version=None, use_virtualenv=True, create=True):
+def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
     """
     Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -136,7 +136,7 @@ def user_cache_dir(app_name=None, app_author=None, version=None, use_virtualenv=
     return _get_folder('user_cache', app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
-def user_state_dir(app_name=None, app_author=None, version=None, roaming=False, use_virtualenv=True, create=True):
+def user_state_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
     """
     Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -156,8 +156,8 @@ def user_state_dir(app_name=None, app_author=None, version=None, roaming=False, 
         str app_author: Only used in Windows, name of the application author.
         str version: If given, the application version identifier will be appended to the app_name.
         bool roaming: roaming appdata directory. That means that for users on a Windows
-            network setup for roaming profiles, this user data will be synchronized on login. See
-            http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx for a discussion of issues.
+                      network setup for roaming profiles, this user data will be synchronized on login. See
+                      <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx> for a discussion of issues.
         bool use_virtualenv: If True and we're running inside of a virtualenv, return a path relative to that
             environment.
         bool create: If True, the folder is created if it does not exist before the path is returned.
@@ -168,7 +168,7 @@ def user_state_dir(app_name=None, app_author=None, version=None, roaming=False, 
     return _get_folder('user_state', app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
-def user_logs_dir(app_name=None, app_author=None, version=None, use_virtualenv=True, create=True):
+def user_logs_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
     """
     Return the full path to the user log dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
@@ -195,7 +195,7 @@ def user_logs_dir(app_name=None, app_author=None, version=None, use_virtualenv=T
     return _get_folder('user_logs', app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
-def site_data_dirs(app_name=None, app_author=None, version=None, use_virtualenv=True, create=False):
+def site_data_dirs(app_name, app_author, version=None, use_virtualenv=True, create=False):
     """
     Return the full path to the OS wide data dir for this application.
 
@@ -225,7 +225,7 @@ def site_data_dirs(app_name=None, app_author=None, version=None, use_virtualenv=
     return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)
 
 
-def site_config_dirs(app_name=None, app_author=None, version=None, use_virtualenv=True, create=True):
+def site_config_dirs(app_name, app_author, version=None, use_virtualenv=True, create=True):
     """
     Return the full path to the OS wide config dir for this application.
 
@@ -371,8 +371,8 @@ def _in_virtualenv_folder():
 def _get_win_folder(site, roaming, app_author):
     import ctypes
 
-    if app_author is None:
-        raise RuntimeError('app_author must be provided on Windows')
+    if not isinstance(app_author, str) or app_author == '':
+        raise RuntimeError('On Windows, app_author must be a non-empty string.')
 
     csidl_consts = {
         "CSIDL_APPDATA": 26,
