@@ -58,9 +58,6 @@ class TestTracts(unittest.TestCase):
     def _expected_base_paths(self):
         mac_os_app_support = os.path.expanduser('~/Library/Application Support/')
         mac_os_site_app_support = '/Library/Application Support'
-        windows_username = os.getenv('username')
-        windows_absolute_path = os.path.join('C:', os.sep)
-        windows_base_path = os.path.join(windows_absolute_path, 'Users', windows_username, 'AppData', 'Local')
         base_names = {
             'mac_os': {
                 'user_data': mac_os_app_support,
@@ -80,17 +77,7 @@ class TestTracts(unittest.TestCase):
                 'site_data': ['/usr/local/share', '/usr/share'],
                 'site_config': ['/etc/xdg']
             },
-            'windows': {
-                'user_data': os.path.join(windows_base_path, self.app_author),
-                'user_config': os.path.join(windows_base_path, self.app_author),
-                'user_state': os.path.join(windows_base_path, self.app_author),
-                'user_cache': os.path.join(windows_base_path, self.app_author, 'Caches'),
-                'user_log': os.path.join(windows_base_path, self.app_author, 'Logs'),
-                'site_data': [os.path.join(windows_absolute_path, 'ProgramData', self.app_author)],
-                'site_config': [os.path.join(windows_absolute_path, 'ProgramData', self.app_author)]
-            }
-
-            # TODO: Windows.
+            'windows': self._windows_base_paths()
         }
 
         # add virtualenv expectations. When there is no actual virtualenv, we expect the use_virtualenv parameter
@@ -103,6 +90,33 @@ class TestTracts(unittest.TestCase):
             paths['user_log_venv'] = paths['user_log']
 
         return base_names
+
+    def _windows_base_paths(self):
+        windows_username = os.getenv('username')
+        base_paths = {
+            'user_data': '',
+            'user_config': '',
+            'user_state': '',
+            'user_cache': '',
+            'user_log': '',
+            'site_data': '',
+            'site_config': ''
+
+        }
+        if windows_username is not None:
+            windows_absolute_path = os.path.join('C:', os.sep)
+            windows_base_path = os.path.join(windows_absolute_path, 'Users', windows_username, 'AppData', 'Local')
+
+            # add windows expectations.
+            base_paths['user_data'] = os.path.join(windows_base_path, self.app_author)
+            base_paths['user_config'] = os.path.join(windows_base_path, self.app_author)
+            base_paths['user_state'] = os.path.join(windows_base_path, self.app_author)
+            base_paths['user_cache'] = os.path.join(windows_base_path, self.app_author, 'Caches')
+            base_paths['user_log'] = os.path.join(windows_base_path, self.app_author, 'Logs')
+            base_paths['site_data'] = [os.path.join(windows_absolute_path, 'ProgramData', self.app_author)]
+            base_paths['site_config'] = [os.path.join(windows_absolute_path, 'ProgramData', self.app_author)]
+
+        return base_paths
 
     @staticmethod
     def _setup_linux_xdg_vars():
@@ -564,7 +578,7 @@ class TestTractsVirtualEnv(TestTracts):
             paths['user_config_venv'] = os.path.join(self.virtualenv_dir, 'config')
             paths['user_state_venv'] = os.path.join(self.virtualenv_dir, 'state')
             paths['user_cache_venv'] = os.path.join(self.virtualenv_dir, 'cache')
-            paths['user_log_venv'] = os.path.join(self.virtualenv_dir, 'log')
+            paths['user_log_venv'] = os.path.join(self.virtualenv_dir, 'logs')
 
         return base_paths
 
@@ -577,7 +591,10 @@ class TestTractsVirtualEnv(TestTracts):
         shutil.rmtree(cls.virtualenv_dir)
 
     def setUp(self):
-        activate_script = os.path.join(self.virtualenv_dir, 'bin', 'activate_this.py')
+        if self.platform == 'windows':
+            activate_script = os.path.join(self.virtualenv_dir, 'Scripts', 'activate_this.py')
+        else:
+            activate_script = os.path.join(self.virtualenv_dir, 'bin', 'activate_this.py')
         execfile(activate_script, dict(__file__=activate_script))
 
 
