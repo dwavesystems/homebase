@@ -220,7 +220,7 @@ def site_data_dirs(app_name=None, app_author=None, version=None, use_virtualenv=
         bool create: If True, the folder is created if it does not exist before the path is returned.
 
     Returns:
-        str: the full path to the site data dir for this application.
+        list: A list of paths to the site data directories for this application.
     """
     return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)
 
@@ -250,7 +250,7 @@ def site_config_dirs(app_name=None, app_author=None, version=None, use_virtualen
         bool create: If True, the folder is created if it does not exist before the path is returned.
 
     Returns:
-        str: the full path to the site config dir for this application.
+        list: A list of paths to the site config directory for this application.
     """
     return _get_folder('site_config', app_name, app_author, version, False, use_virtualenv, create)
 

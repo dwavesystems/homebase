@@ -3,7 +3,7 @@
 
 A place for your app to call home.
 
-*tracts* provides a platform independent API for querying paths where applications can write caches, data, configs, and
+*tracts* provides a platform independent API for querying paths in which applications can write caches, data, configs, and
 other information.
 
 
@@ -43,23 +43,28 @@ import tracts
 app_name = "my_app"
 user_data_dir = tracts.user_data_dir(app_name=app_name)
 user_cache_dir = tracts.user_cache_dir(app_name=app_name)
-user_logs_dir = tracts.user_log_dir(app_name=app_name)
+user_logs_dir = tracts.user_logs_dir(app_name=app_name)
 user_config_dir = tracts.user_config_dir(app_name=app_name)
 user_state_dir = tracts.user_state_dir(app_name=app_name)
 
 # site specific directories, e.g. /usr/share
 site_data_dirs = tracts.site_data_dirs(app_name=app_name)
-site_config_dirs = tracts.site_condig_dirs(app_name=app_name)
+site_config_dirs = tracts.site_config_dirs(app_name=app_name)
 ```
 
 If you are running inside of a virtualenv, *tracts* will return paths that are relative to that environment.
 If you still want the user path, pass `use_virtualenv=False` in the call.
 
+For example, suppose you have set up a virtual environment in `/home/username/env` on linux
+
 ```python
 import tracts
 
 app_name = "my_app"
+user_data_dir = tracts.user_data_dir(app_name=app_name)
+# /home/username/env/data/my_app
 user_data_dir = tracts.user_data_dir(app_name=app_name, use_virtualenv=False)
+# /home/username/.local/share/my_app.
 ```
 
 See the [documentation](# TODO) for more details and examples.
