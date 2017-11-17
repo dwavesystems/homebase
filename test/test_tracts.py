@@ -622,7 +622,12 @@ class TestTracts(unittest.TestCase):
 
 
 class TestTractsVirtualEnv(TestTracts):
+
     virtualenv_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test_venv')
+    real_prefix = sys.prefix
+
+    def __init__(self, *args, **kwargs):
+        TestTracts.__init__(self, *args, **kwargs)
 
     def _expected_base_paths(self):
         base_paths = TestTracts._expected_base_paths(self)
@@ -640,29 +645,23 @@ class TestTractsVirtualEnv(TestTracts):
     @classmethod
     def setUpClass(cls):
         virtualenv.create_environment(cls.virtualenv_dir)
+        if sys.platform == 'win32':
+            activate_script = os.path.join(cls.virtualenv_dir, 'Scripts', 'activate_this.py')
+        else:
+            activate_script = os.path.join(cls.virtualenv_dir, 'bin', 'activate_this.py')
+        execfile(activate_script, dict(__file__=activate_script))
 
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.virtualenv_dir)
-
-    def setUp(self):
-        if self.platform == 'windows':
-            activate_script = os.path.join(self.virtualenv_dir, 'Scripts', 'activate_this.py')
-        else:
-            activate_script = os.path.join(self.virtualenv_dir, 'bin', 'activate_this.py')
-        execfile(activate_script, dict(__file__=activate_script))
-
-    def tearDown(self):
         if hasattr(sys, 'real_prefix'):
-            print '*' * 50
-            print sys.prefix
             sys.prefix = sys.real_prefix
-            print sys.prefix
-            print '*' * 50
+            delattr(sys, 'real_prefix')
         else:
             sys.prefix = sys.base_prefix
 
 
+@unittest.skipUnless(sys.platform.startswith('linux'), 'TestTractsLinuxXDG: Not Linux')
 class TestTractsLinuxXDG(TestTracts):
 
     def setUp(self):
@@ -695,13 +694,57 @@ class TestTractsLinuxXDG(TestTracts):
         return base_paths
 
 
-# class TestTractsWindowsExtra(TestTracts):
-#
-#     def test_user_data_no_app_author(self):
-#         if self.platform == 'windows':
-#             with self.assertRaises(RuntimeError):
-#                 tracts.user_data_dir(self.app_name, app_author=None)
-#
+@unittest.skipUnless(sys.platform == 'win32', 'TestTractsWindowsExtra: Not Windows')
+class TestTractsWindowsExtra(TestTracts):
+
+    def setUp(self):
+        windows_username = os.getenv('username')
+        windows_absolute_path = os.path.join('C:', os.sep)
+        self.roaming_base_path = os.path.join(windows_absolute_path, 'Users', windows_username, 'AppData', 'Roaming')
+
+        # # add windows expectations.
+        # base_paths['user_data'] = os.path.join(windows_base_path, self.app_author)
+
+    def test_user_data_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.user_data_dir(self.app_name, app_author=None)
+
+    def test_user_config_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.user_config_dir(self.app_name, app_author=None)
+
+    def test_user_cache_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.user_cache_dir(self.app_name, app_author=None)
+
+    def test_user_logs_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.user_logs_dir(self.app_name, app_author=None)
+
+    def test_user_state_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.user_state_dir(self.app_name, app_author=None)
+
+    def test_site_data_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.site_data_dir(self.app_name, app_author=None)
+
+    def test_site_config_no_app_author(self):
+        with self.assertRaises(RuntimeError):
+            tracts.site_config_dir(self.app_name, app_author=None)
+
+    def test_user_data_roaming(self):
+        expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
+        self.assertEqual(expected, tracts.user_data_dir(self.app_name, self.app_author, roaming=True))
+
+    def test_user_config_roaming(self):
+        expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
+        self.assertEqual(expected, tracts.user_config_dir(self.app_name, self.app_author, roaming=True))
+
+    def test_user_state_roaming(self):
+        expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
+        self.assertEqual(expected, tracts.user_state_dir(self.app_name, self.app_author, roaming=True))
+
 
 if __name__ == '__main__':
     unittest.main()
