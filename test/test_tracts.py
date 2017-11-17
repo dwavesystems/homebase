@@ -649,7 +649,12 @@ class TestTractsVirtualEnv(TestTracts):
             activate_script = os.path.join(cls.virtualenv_dir, 'Scripts', 'activate_this.py')
         else:
             activate_script = os.path.join(cls.virtualenv_dir, 'bin', 'activate_this.py')
-        execfile(activate_script, dict(__file__=activate_script))
+
+        if sys.version_info.major == '2':
+            execfile(activate_script, dict(__file__=activate_script))
+        else:
+            with open(activate_script) as activate:
+                exec(activate.read(), dict(__file__=activate_script))
 
     @classmethod
     def tearDownClass(cls):
