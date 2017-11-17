@@ -5,7 +5,7 @@
 Overview
 ========
 
-tracts
+homebase
 -----------------
 
 An API for getting platform independent paths to user data and configuration folders, with support for virtualenv_
@@ -28,7 +28,7 @@ Documentation
    :maxdepth: 1
    :caption: Contents:
 
-   tracts
+   homebase
    license
 
 

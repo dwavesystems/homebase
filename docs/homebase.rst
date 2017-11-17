@@ -1,10 +1,10 @@
-tracts module
+homebase module
 =====================================
 
 .. role:: bash(code)
     :language: bash
 
-.. automodule:: tracts.tracts
+.. automodule:: homebase.homebase
     :members:
     :undoc-members:
     :show-inheritance:

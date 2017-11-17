@@ -207,7 +207,7 @@ def site_data_dir(app_name, app_author, version=None, use_virtualenv=True, creat
         * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
         * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
-    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+    For \*nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
     .. Note::
         On linux, the $XDG_DATA_DIRS environment variable may contain a list. `site_data_dir` returns the first
@@ -241,7 +241,7 @@ def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, 
         * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
         * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
-    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+    For \*nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
     .. WARNING::
         Do not use this on Windows Vista. See the Vista-Fail note above for why.
@@ -271,7 +271,7 @@ def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, cre
         * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
         * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
-    For Unix, this is using the :bash:`$XDG_DATA_DIRS` default.
+    For \*nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
     .. Note::
         On linux, the $XDG_CONFIG_DIRS environment variable may contain a list. `site_config_dir` returns the first
@@ -305,7 +305,7 @@ def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True
         * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
         * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
-    For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
+    For \*nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
     .. WARNING::
         Do not use this on Windows Vista. See the Vista-Fail note above for why.
