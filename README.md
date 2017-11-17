@@ -1,9 +1,9 @@
-# tracts
+# homebase
 
 
 A place for your app to call home.
 
-*tracts* provides a platform independent API for querying paths in which applications can write caches, data, configs, and
+*homebase* provides a platform independent API for querying paths in which applications can write caches, data, configs, and
 other information.
 
 
@@ -38,34 +38,34 @@ python setup.py install
 ## Usage
 
 ```python
-import tracts
+import homebase
 
 app_name = "my_app"
 app_author = "nakatomi-corp"
-user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author)
-user_cache_dir = tracts.user_cache_dir(app_name=app_name, app_author=app_author)
-user_logs_dir = tracts.user_logs_dir(app_name=app_name, app_author=app_author)
-user_config_dir = tracts.user_config_dir(app_name=app_name, app_author=app_author)
-user_state_dir = tracts.user_state_dir(app_name=app_name, app_author=app_author)
+user_data_dir = homebase.user_data_dir(app_name=app_name, app_author=app_author)
+user_cache_dir = homebase.user_cache_dir(app_name=app_name, app_author=app_author)
+user_logs_dir = homebase.user_logs_dir(app_name=app_name, app_author=app_author)
+user_config_dir = homebase.user_config_dir(app_name=app_name, app_author=app_author)
+user_state_dir = homebase.user_state_dir(app_name=app_name, app_author=app_author)
 
 # site specific directories, e.g. /usr/share
-site_data_dir = tracts.site_data_dir(app_name=app_name, app_author=app_author)
-site_config_dir = tracts.site_config_dir(app_name=app_name, app_author=app_author)
+site_data_dir = homebase.site_data_dir(app_name=app_name, app_author=app_author)
+site_config_dir = homebase.site_config_dir(app_name=app_name, app_author=app_author)
 ```
 
-If you are running inside of a virtualenv, *tracts* will return paths that are relative to that environment.
+If you are running inside of a virtualenv, *homebase* will return paths that are relative to that environment.
 If you still want the user path, pass `use_virtualenv=False` in the call.
 
 For example, suppose you have set up a virtual environment in `/home/username/env` on linux
 
 ```python
-import tracts
+import homebase
 
 app_name = "my_app"
 app_author = "nakatomi-corp"
-user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author)
+user_data_dir = homebase.user_data_dir(app_name=app_name, app_author=app_author)
 # /home/username/env/data/my_app
-user_data_dir = tracts.user_data_dir(app_name=app_name, app_author=app_author, use_virtualenv=False)
+user_data_dir = homebase.user_data_dir(app_name=app_name, app_author=app_author, use_virtualenv=False)
 # /home/username/.local/share/my_app.
 ```
 

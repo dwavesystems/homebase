@@ -1,21 +1,21 @@
 """
-Test tracts.
+Test homebase.
 
-Since some of the tracts functionality is OS specific, this module can only get 100% coverage if it is run on
+Since some of the homebase functionality is OS specific, this module can only get 100% coverage if it is run on
 all three operating systems: Windows, Linux, and macOS. Thus, coverage tools will need to merge reports from different
 runs.
 
 From a functional perspective, the only thing that changes across operating systems are expected results.
 As such, the strategy for testing is as follows:
 
-1. A base class TestTracts defines basic expectations and all of the unit tests common to all three operating
+1. A base class TestHomebase defines basic expectations and all of the unit tests common to all three operating
    systems.
-2. A class for handling virtualenv tests, TestTractsVirtualEnv that modifies the expected path for each
-   OS to expect the appropriate virtualenv base dir, and runs all tests of TestTracts by inheriting from it.
-3. The base class TestTracts tests linux in the case where the XDG variables are not set. Another class
-   TestTractsLinuxXDG sets these variables and the expected paths and reruns the tests by inheriting from
-   TestTracts.
-4.A class for Windows TestTractsWindows adds tests for roaming and app_author values.
+2. A class for handling virtualenv tests, TestHomebaseVirtualEnv that modifies the expected path for each
+   OS to expect the appropriate virtualenv base dir, and runs all tests of TestHomebase by inheriting from it.
+3. The base class TestHomebase tests linux in the case where the XDG variables are not set. Another class
+   TestHomebaseLinuxXDG sets these variables and the expected paths and reruns the tests by inheriting from
+   TestHomebase.
+4.A class for Windows TestHomebaseWindows adds tests for roaming and app_author values.
 
 To run the tests against linux, you can use the accompanying Dockerfile.
 
@@ -26,7 +26,7 @@ import shutil
 import unittest
 
 import virtualenv
-import tracts
+import homebase
 
 _PY2 = sys.version_info[0] == 2
 if _PY2:
@@ -37,7 +37,7 @@ else:
         return iter(d.values())
 
 
-class TestTracts(unittest.TestCase):
+class TestHomebase(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
@@ -149,29 +149,29 @@ class TestTracts(unittest.TestCase):
     def test_user_data_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_data'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                              use_virtualenv=False, create=False))
+                         homebase.user_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                use_virtualenv=False, create=False))
 
     def test_user_data_no_version_no_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_data'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=False, create=True))
+        self.assertEqual(expected, homebase.user_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=False, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     def test_user_data_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_data_venv'], self.app_name)
-        self.assertEqual(expected, tracts.user_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=True, create=False))
+        self.assertEqual(expected, homebase.user_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=True, create=False))
 
     def test_user_data_no_version_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_data_venv'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=True, create=True))
+        self.assertEqual(expected, homebase.user_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=True, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
@@ -179,16 +179,16 @@ class TestTracts(unittest.TestCase):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_data'], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.user_data_dir(self.app_name, app_author=self.app_author, version=version,
-                                              use_virtualenv=False, create=False))
+                         homebase.user_data_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=False, create=False))
 
     def test_user_data_version_no_venv_create(self):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_data'], '{}_{}'.format(self.app_name, version))
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        result = tracts.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
-                                      create=True)
+        result = homebase.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
+                                        create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -197,8 +197,8 @@ class TestTracts(unittest.TestCase):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['user_data_venv'],
                                 '{}_{}'.format(self.app_name, version))
-        result = tracts.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                      create=False)
+        result = homebase.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                        create=False)
         self.assertEqual(expected, result)
 
     def test_user_data_version_venv_create(self):
@@ -208,8 +208,8 @@ class TestTracts(unittest.TestCase):
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertFalse(os.path.exists(expected))
-        result = tracts.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                      create=True)
+        result = homebase.user_data_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                        create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -220,31 +220,31 @@ class TestTracts(unittest.TestCase):
     def test_user_cache_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_cache'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=False, create=False))
+                         homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=False, create=False))
 
     def test_user_cache_no_version_no_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_cache'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertEqual(expected,
-                         tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=False, create=True))
+                         homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=False, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     def test_user_cache_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_cache_venv'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=True, create=False))
+                         homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=True, create=False))
 
     def test_user_cache_no_version_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_cache_venv'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
-                                                         use_virtualenv=True, create=True))
+        self.assertEqual(expected, homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=None,
+                                                           use_virtualenv=True, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
@@ -252,16 +252,16 @@ class TestTracts(unittest.TestCase):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_cache'], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=version,
-                                               use_virtualenv=False, create=False))
+                         homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=version,
+                                                 use_virtualenv=False, create=False))
 
     def test_user_cache_version_no_venv_create(self):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_cache'], '{}_{}'.format(self.app_name, version))
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        result = tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
-                                       create=True)
+        result = homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
+                                         create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -270,8 +270,8 @@ class TestTracts(unittest.TestCase):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['user_cache_venv'],
                                 '{}_{}'.format(self.app_name, version))
-        result = tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                       create=False)
+        result = homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                         create=False)
         self.assertEqual(expected, result)
 
     def test_user_cache_version_venv_create(self):
@@ -281,8 +281,8 @@ class TestTracts(unittest.TestCase):
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertFalse(os.path.exists(expected))
-        result = tracts.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                       create=True)
+        result = homebase.user_cache_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                         create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -293,32 +293,32 @@ class TestTracts(unittest.TestCase):
     def test_user_config_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_config'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=False, create=False))
+                         homebase.user_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=False, create=False))
 
     def test_user_config_no_version_no_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_config'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertEqual(expected,
-                         tracts.user_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=False, create=True))
+                         homebase.user_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=False, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     def test_user_config_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_config_venv'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=True, create=False))
+                         homebase.user_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=True, create=False))
 
     def test_user_config_no_version_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_config_venv'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertEqual(expected,
-                         tracts.user_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=True, create=True))
+                         homebase.user_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=True, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
@@ -326,16 +326,16 @@ class TestTracts(unittest.TestCase):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_config'], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.user_config_dir(self.app_name, app_author=self.app_author, version=version,
-                                                use_virtualenv=False, create=False))
+                         homebase.user_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                                  use_virtualenv=False, create=False))
 
     def test_user_config_version_no_venv_create(self):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_config'], '{}_{}'.format(self.app_name, version))
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        result = tracts.user_config_dir(self.app_name, app_author=self.app_author, version=version,
-                                        use_virtualenv=False, create=True)
+        result = homebase.user_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                          use_virtualenv=False, create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -344,8 +344,8 @@ class TestTracts(unittest.TestCase):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['user_config_venv'],
                                 '{}_{}'.format(self.app_name, version))
-        result = tracts.user_config_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                        create=False)
+        result = homebase.user_config_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                          create=False)
         self.assertEqual(expected, result)
 
     def test_user_config_version_venv_create(self):
@@ -355,8 +355,8 @@ class TestTracts(unittest.TestCase):
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertFalse(os.path.exists(expected))
-        result = tracts.user_config_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                        create=True)
+        result = homebase.user_config_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                          create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -367,31 +367,31 @@ class TestTracts(unittest.TestCase):
     def test_user_state_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_state'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_state_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=False, create=False))
+                         homebase.user_state_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=False, create=False))
 
     def test_user_state_no_version_no_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_state'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertEqual(expected,
-                         tracts.user_state_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=False, create=True))
+                         homebase.user_state_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=False, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     def test_user_state_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_state_venv'], self.app_name)
         self.assertEqual(expected,
-                         tracts.user_state_dir(self.app_name, app_author=self.app_author, version=None,
-                                               use_virtualenv=True, create=False))
+                         homebase.user_state_dir(self.app_name, app_author=self.app_author, version=None,
+                                                 use_virtualenv=True, create=False))
 
     def test_user_state_no_version_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_state_venv'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_state_dir(self.app_name, app_author=self.app_author, version=None,
-                                                         use_virtualenv=True, create=True))
+        self.assertEqual(expected, homebase.user_state_dir(self.app_name, app_author=self.app_author, version=None,
+                                                           use_virtualenv=True, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
@@ -399,16 +399,16 @@ class TestTracts(unittest.TestCase):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_state'], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.user_state_dir(self.app_name, app_author=self.app_author, version=version,
-                                               use_virtualenv=False, create=False))
+                         homebase.user_state_dir(self.app_name, app_author=self.app_author, version=version,
+                                                 use_virtualenv=False, create=False))
 
     def test_user_state_version_no_venv_create(self):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_state'], '{}_{}'.format(self.app_name, version))
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        result = tracts.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
-                                       create=True)
+        result = homebase.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
+                                         create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -417,8 +417,8 @@ class TestTracts(unittest.TestCase):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['user_state_venv'],
                                 '{}_{}'.format(self.app_name, version))
-        result = tracts.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                       create=False)
+        result = homebase.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                         create=False)
         self.assertEqual(expected, result)
 
     def test_user_state_version_venv_create(self):
@@ -428,8 +428,8 @@ class TestTracts(unittest.TestCase):
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertFalse(os.path.exists(expected))
-        result = tracts.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                       create=True)
+        result = homebase.user_state_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                         create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -439,29 +439,29 @@ class TestTracts(unittest.TestCase):
     #####################################################
     def test_user_log_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_log'], self.app_name)
-        self.assertEqual(expected, tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=False, create=False))
+        self.assertEqual(expected, homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=False, create=False))
 
     def test_user_log_no_version_no_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_log'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=False, create=True))
+        self.assertEqual(expected, homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=False, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     def test_user_log_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_log_venv'], self.app_name)
-        self.assertEqual(expected, tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=True, create=False))
+        self.assertEqual(expected, homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=True, create=False))
 
     def test_user_log_no_version_venv_create(self):
         expected = os.path.join(self.base_paths[self.platform]['user_log_venv'], self.app_name)
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        self.assertEqual(expected, tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
-                                                        use_virtualenv=True, create=True))
+        self.assertEqual(expected, homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=None,
+                                                          use_virtualenv=True, create=True))
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
@@ -469,16 +469,16 @@ class TestTracts(unittest.TestCase):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_log'], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=version,
-                                              use_virtualenv=False, create=False))
+                         homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=False, create=False))
 
     def test_user_log_version_no_venv_create(self):
         version = "1.0"
         expected = os.path.join(self.base_paths[self.platform]['user_log'], '{}_{}'.format(self.app_name, version))
         if os.path.exists(expected):
             shutil.rmtree(expected)
-        result = tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
-                                      create=True)
+        result = homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=False,
+                                        create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
@@ -487,8 +487,8 @@ class TestTracts(unittest.TestCase):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['user_log_venv'],
                                 '{}_{}'.format(self.app_name, version))
-        result = tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                      create=False)
+        result = homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                        create=False)
         self.assertEqual(expected, result)
 
     def test_user_log_version_venv_create(self):
@@ -498,139 +498,139 @@ class TestTracts(unittest.TestCase):
         if os.path.exists(expected):
             shutil.rmtree(expected)
         self.assertFalse(os.path.exists(expected))
-        result = tracts.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
-                                      create=True)
+        result = homebase.user_logs_dir(self.app_name, app_author=self.app_author, version=version, use_virtualenv=True,
+                                        create=True)
         self.assertEqual(expected, result)
         self.assertTrue(os.path.exists(expected))
         shutil.rmtree(expected)
 
     #####################################################
-    # site_data_tracts. Not testing create=True since we don't know if we have permissions.
+    # site_data_homebase. Not testing create=True since we don't know if we have permissions.
     #####################################################
     def test_site_data_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['site_data'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                              use_virtualenv=False, create=False))
+                         homebase.site_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                use_virtualenv=False, create=False))
 
     def test_site_data_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['site_data'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=None,
-                                              use_virtualenv=True, create=False))
+                         homebase.site_data_dir(self.app_name, app_author=self.app_author, version=None,
+                                                use_virtualenv=True, create=False))
 
     def test_site_data_version_no_venv_no_create(self):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['site_data'][0], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=version,
-                                              use_virtualenv=False, create=False))
+                         homebase.site_data_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=False, create=False))
 
     def test_site_data_version_venv_no_create(self):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['site_data'][0], '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.site_data_dir(self.app_name, app_author=self.app_author, version=version,
-                                              use_virtualenv=True, create=False))
+                         homebase.site_data_dir(self.app_name, app_author=self.app_author, version=version,
+                                                use_virtualenv=True, create=False))
 
     def test_site_data_list_no_version_no_venv_no_create(self):
         expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
         self.assertEqual(expected,
-                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
-                                                   use_virtualenv=False, create=False))
+                         homebase.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                     use_virtualenv=False, create=False))
 
     def test_site_data_list_no_version_venv_no_create(self):
         expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_data']]
         self.assertEqual(expected,
-                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
-                                                   use_virtualenv=True, create=False))
+                         homebase.site_data_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                     use_virtualenv=True, create=False))
 
     def test_site_data_list_version_no_venv_no_create(self):
         version = "1.0"
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_data']]
         self.assertEqual(expected,
-                         tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
-                                                   use_virtualenv=False, create=False))
+                         homebase.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                                     use_virtualenv=False, create=False))
 
     def test_site_data_list_version_venv_no_create(self):
         version = '1.0'
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_data']]
-        result = tracts.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
-                                           use_virtualenv=True, create=False)
+        result = homebase.site_data_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                             use_virtualenv=True, create=False)
         self.assertEqual(expected, result)
 
     #####################################################
-    # site_config_tracts. Not testing create=True since we don't know if we have permissions.
+    # site_config_homebase. Not testing create=True since we don't know if we have permissions.
     #####################################################
     def test_site_config_no_version_no_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['site_config'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=False, create=False))
+                         homebase.site_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=False, create=False))
 
     def test_site_config_no_version_venv_no_create(self):
         expected = os.path.join(self.base_paths[self.platform]['site_config'][0], self.app_name)
         self.assertEqual(expected,
-                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=None,
-                                                use_virtualenv=True, create=False))
+                         homebase.site_config_dir(self.app_name, app_author=self.app_author, version=None,
+                                                  use_virtualenv=True, create=False))
 
     def test_site_config_version_no_venv_no_create(self):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['site_config'][0],
                                 '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=version,
-                                                use_virtualenv=False, create=False))
+                         homebase.site_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                                  use_virtualenv=False, create=False))
 
     def test_site_config_version_venv_no_create(self):
         version = '1.0'
         expected = os.path.join(self.base_paths[self.platform]['site_config'][0],
                                 '{}_{}'.format(self.app_name, version))
         self.assertEqual(expected,
-                         tracts.site_config_dir(self.app_name, app_author=self.app_author, version=version,
-                                                use_virtualenv=True, create=False))
+                         homebase.site_config_dir(self.app_name, app_author=self.app_author, version=version,
+                                                  use_virtualenv=True, create=False))
 
     def test_site_config_list_no_version_no_venv_no_create(self):
         expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
         self.assertEqual(expected,
-                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
-                                                     use_virtualenv=False, create=False))
+                         homebase.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                       use_virtualenv=False, create=False))
 
     def test_site_config_list_no_version_venv_no_create(self):
         expected = [os.path.join(d, self.app_name) for d in self.base_paths[self.platform]['site_config']]
         self.assertEqual(expected,
-                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
-                                                     use_virtualenv=True, create=False))
+                         homebase.site_config_dir_list(self.app_name, app_author=self.app_author, version=None,
+                                                       use_virtualenv=True, create=False))
 
     def test_site_config_list_version_no_venv_no_create(self):
         version = "1.0"
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_config']]
         self.assertEqual(expected,
-                         tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
-                                                     use_virtualenv=False, create=False))
+                         homebase.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                                       use_virtualenv=False, create=False))
 
     def test_site_config_list_version_venv_no_create(self):
         version = '1.0'
         expected = [os.path.join(d, '{}_{}'.format(self.app_name, version))
                     for d in self.base_paths[self.platform]['site_config']]
-        result = tracts.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
-                                             use_virtualenv=True, create=False)
+        result = homebase.site_config_dir_list(self.app_name, app_author=self.app_author, version=version,
+                                               use_virtualenv=True, create=False)
         self.assertEqual(expected, result)
 
 
-class TestTractsVirtualEnv(TestTracts):
+class TestHomebaseVirtualEnv(TestHomebase):
 
     virtualenv_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test_venv')
     real_prefix = sys.prefix
 
     def __init__(self, *args, **kwargs):
-        TestTracts.__init__(self, *args, **kwargs)
+        TestHomebase.__init__(self, *args, **kwargs)
 
     def _expected_base_paths(self):
-        base_paths = TestTracts._expected_base_paths(self)
+        base_paths = TestHomebase._expected_base_paths(self)
 
         # add virtualenv expectations.
         for paths in itervalues(base_paths):
@@ -666,8 +666,8 @@ class TestTractsVirtualEnv(TestTracts):
             sys.prefix = sys.base_prefix
 
 
-@unittest.skipUnless(sys.platform.startswith('linux'), 'TestTractsLinuxXDG: Not Linux')
-class TestTractsLinuxXDG(TestTracts):
+@unittest.skipUnless(sys.platform.startswith('linux'), 'TestHomebaseLinuxXDG: Not Linux')
+class TestHomebaseLinuxXDG(TestHomebase):
 
     def setUp(self):
         self._setup_linux_xdg_vars()
@@ -681,7 +681,7 @@ class TestTractsLinuxXDG(TestTracts):
         ignored and the test will be meaningless. You can either run it on linux (e.g. using the Dockerfile at the root
         of this project),or on mac by hard coding self.platform to 'linux' e.g. by overriding __init__.
         """
-        base_paths = TestTracts._expected_base_paths(self)
+        base_paths = TestHomebase._expected_base_paths(self)
 
         self._setup_linux_xdg_vars()
 
@@ -699,8 +699,8 @@ class TestTractsLinuxXDG(TestTracts):
         return base_paths
 
 
-@unittest.skipUnless(sys.platform == 'win32', 'TestTractsWindowsExtra: Not Windows')
-class TestTractsWindowsExtra(TestTracts):
+@unittest.skipUnless(sys.platform == 'win32', 'TestHomebaseWindowsExtra: Not Windows')
+class TestHomebaseWindowsExtra(TestHomebase):
 
     def setUp(self):
         windows_username = os.getenv('username')
@@ -712,43 +712,43 @@ class TestTractsWindowsExtra(TestTracts):
 
     def test_user_data_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.user_data_dir(self.app_name, app_author=None)
+            homebase.user_data_dir(self.app_name, app_author=None)
 
     def test_user_config_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.user_config_dir(self.app_name, app_author=None)
+            homebase.user_config_dir(self.app_name, app_author=None)
 
     def test_user_cache_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.user_cache_dir(self.app_name, app_author=None)
+            homebase.user_cache_dir(self.app_name, app_author=None)
 
     def test_user_logs_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.user_logs_dir(self.app_name, app_author=None)
+            homebase.user_logs_dir(self.app_name, app_author=None)
 
     def test_user_state_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.user_state_dir(self.app_name, app_author=None)
+            homebase.user_state_dir(self.app_name, app_author=None)
 
     def test_site_data_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.site_data_dir(self.app_name, app_author=None)
+            homebase.site_data_dir(self.app_name, app_author=None)
 
     def test_site_config_no_app_author(self):
         with self.assertRaises(RuntimeError):
-            tracts.site_config_dir(self.app_name, app_author=None)
+            homebase.site_config_dir(self.app_name, app_author=None)
 
     def test_user_data_roaming(self):
         expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
-        self.assertEqual(expected, tracts.user_data_dir(self.app_name, self.app_author, roaming=True))
+        self.assertEqual(expected, homebase.user_data_dir(self.app_name, self.app_author, roaming=True))
 
     def test_user_config_roaming(self):
         expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
-        self.assertEqual(expected, tracts.user_config_dir(self.app_name, self.app_author, roaming=True))
+        self.assertEqual(expected, homebase.user_config_dir(self.app_name, self.app_author, roaming=True))
 
     def test_user_state_roaming(self):
         expected = os.path.join(self.roaming_base_path, self.app_author, self.app_name)
-        self.assertEqual(expected, tracts.user_state_dir(self.app_name, self.app_author, roaming=True))
+        self.assertEqual(expected, homebase.user_state_dir(self.app_name, self.app_author, roaming=True))
 
 
 if __name__ == '__main__':

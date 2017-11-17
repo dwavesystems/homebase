@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 from os.path import abspath, join, dirname, realpath
-from tracts import __version__
+from homebase import __version__
 
 here = abspath(dirname(realpath(__file__)))
 
@@ -11,7 +11,7 @@ def readme(folder):
 
 
 setup(
-    name='tracts',
+    name='homebase',
     version=__version__,
     description='A platform independent API for paths in which applications can write data.',
     author='D-Wave Systems Inc.',
