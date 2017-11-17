@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This module provides an API for determining application specific directories for data, config, logs, etc.
@@ -52,10 +51,10 @@ def user_data_dir(app_name, app_author, version=None, roaming=False, use_virtual
 
         * Mac OS X:               :bash:`~/Library/Application Support/<app_name>`
         * Unix:                   :bash:`~/.local/share/<app_name>    # or $XDG_DATA_HOME/<app_name>, if defined.`
-        * Win XP (not roaming):   :bash:`C:\Documents and Settings\<username>\Application Data\<app_author>\<app_name>`
-        * Win XP (roaming):       :bash:`C:\Documents and Settings\<username>\Local Settings\Application Data\<app_author>\<app_name>`
-        * Win 7  (not roaming):   :bash:`C:\Users\<username>\AppData\Local\<app_author>\<app_name>`
-        * Win 7  (roaming):       :bash:`C:\Users\<username>\AppData\Roaming\<app_author>\<app_name>`
+        * Win XP (not roaming):   :bash:`C:\\Documents and Settings\\<username>\\Application Data\\<app_author>\\<app_name>`
+        * Win XP (roaming):       :bash:`C:\\Documents and Settings\\<username>\\Local Settings\\Application Data\\<app_author>\\<app_name>`
+        * Win 7  (not roaming):   :bash:`C:\\Users\\<username>\\AppData\\Local\\<app_author>\\<app_name>`
+        * Win 7  (roaming):       :bash:`C:\\Users\\<username>\\AppData\\Roaming\\<app_author>\\<app_name>`
 
     For Unix, we follow the XDG spec and support :bash:`$XDG_DATA_HOME`.
     That means, by default :bash:`~/.local/share/<AppName>`.
@@ -88,7 +87,7 @@ def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtu
     Typical user config directories are:
         * Mac OS X:               same as user_data_dir
         * Unix:                   :bash:`~/.config/<AppName> # or in $XDG_CONFIG_HOME, if defined`
-        * Win \*:                  same as user_data_dir
+        * Win \\*:                  same as user_data_dir
 
     For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME.
     That means, by default :bash:`~/.config/<AppName>`.
@@ -120,8 +119,8 @@ def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, crea
     Typical user cache directories are:
         * Mac OS X:   :bash:`~/Library/Caches/<AppName>`
         * Unix:       :bash:`~/.cache/<AppName> (XDG default)`
-        * Win XP:     :bash:`C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Cache`
-        * Vista:      :bash:`C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Cache`
+        * Win XP:     :bash:`C:\\Documents and Settings\\<username>\\Local Settings\\Application Data\\<AppAuthor>\\<AppName>\\Cache`
+        * Vista:      :bash:`C:\\Users\\<username>\\AppData\\Local\\<AppAuthor>\\<AppName>\\Cache`
 
     Args:
         str app_name: Name of the application. Will be appended to the base user config path.
@@ -148,7 +147,7 @@ def user_state_dir(app_name, app_author, version=None, roaming=False, use_virtua
     Typical user state directories are:
         * Mac OS X:  same as user_data_dir
         * Unix:      :bash:`~/.local/state/<AppName>   # or in $XDG_STATE_HOME, if defined`
-        * Win \*:     same as user_data_dir
+        * Win \\*:     same as user_data_dir
 
     For Unix, we follow this Debian proposal https://wiki.debian.org/XDGBaseDirectorySpecification#state
     to extend the XDG spec and support $XDG_STATE_HOME. That means, by default :bash:`~/.local/state/<AppName>`.
@@ -180,8 +179,8 @@ def user_logs_dir(app_name, app_author, version=None, use_virtualenv=True, creat
     Typical user log directories are:
         * Mac OS X:   :bash:`~/Library/Logs/<AppName>`
         * Unix:       :bash:`~/.cache/<AppName>/log  # or under $XDG_CACHE_HOME if defined`
-        * Win XP:     :bash:`C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Logs`
-        * Vista:      :bash:`C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Logs`
+        * Win XP:     :bash:`C:\\Documents and Settings\\<username>\\Local Settings\\Application Data\\<AppAuthor>\\<AppName>\\Logs`
+        * Vista:      :bash:`C:\\Users\\<username>\\AppData\\Local\\<AppAuthor>\\<AppName>\\Logs`
 
     Args:
         str app_name: Name of the application. Will be appended to the base user config path.
@@ -204,9 +203,9 @@ def site_data_dir(app_name, app_author, version=None, use_virtualenv=True, creat
     Typical site data directories are:
         * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
         * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
-        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
-        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
-        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+        * Win XP:     :bash:`C:\\Documents and Settings\\All Users\\Application Data\\<AppAuthor>\\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
     For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
@@ -238,9 +237,9 @@ def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, 
     Typical site data directories are:
         * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
         * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
-        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
-        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
-        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+        * Win XP:     :bash:`C:\\Documents and Settings\\All Users\\Application Data\\<AppAuthor>\\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
     For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
@@ -268,9 +267,9 @@ def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, cre
     Typical site data directories are:
         * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
         * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
-        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
-        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
-        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+        * Win XP:     :bash:`C:\\Documents and Settings\\All Users\\Application Data\\<AppAuthor>\\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
     For Unix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
@@ -302,9 +301,9 @@ def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True
     Typical site data directories are:
         * Mac OS X:   :bash:`/Library/Application Support/<AppName>`
         * Unix:       :bash:`/usr/local/share/<AppName> or /usr/share/<AppName>`
-        * Win XP:     :bash:`C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>`
-        * Vista:      :bash:`(Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)`
-        * Win 7:      :bash:`C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.`
+        * Win XP:     :bash:`C:\\Documents and Settings\\All Users\\Application Data\\<AppAuthor>\\<AppName>`
+        * Vista:      :bash:`(Fail! "C:\\ProgramData" is a hidden *system* directory on Vista.)`
+        * Win 7:      :bash:`C:\\ProgramData\\<AppAuthor>\\<AppName>   # Hidden, but writeable on Win 7.`
 
     For *nix, this is using the :bash:`$XDG_DATA_DIRS` default.
 
