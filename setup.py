@@ -18,4 +18,7 @@ setup(
     author_email='oshklarsky@dwavesys.com',
     long_description=readme(here),
     packages=find_packages(),
+    install_requires=[
+        'enum34>=1.1.6'
+    ]
 )
