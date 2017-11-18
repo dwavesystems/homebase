@@ -27,17 +27,30 @@ This code is inspired by and builds on top of code from http://github.com/Active
 
 import sys
 import os
+from enum import Enum
+
+
+class _FolderTypes(Enum):
+    data = 1
+    config = 2
+    cache = 3
+    state = 4
+    logs = 5
+
+
+class Platform(Enum):
+    WINDOWS = 1
+    MACOS = 2
+    POSIX = 3
+
 
 # only calculate this once, at import.
-WINDOWS = MACOSX = LINUX = False
 if sys.platform == 'win32':
-    WINDOWS = True
+    platform = Platform.WINDOWS
 elif sys.platform == 'darwin':
-    MACOSX = True
+    platform = Platform.MACOS
 else:
-    # this is a broad generalization. We may be able to get away with sys.platform.startswith('linux') and error
-    # out on everything else. But this requires some testing.
-    LINUX = True
+    platform = Platform.POSIX
 
 
 def user_data_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
@@ -74,7 +87,7 @@ def user_data_dir(app_name, app_author, version=None, roaming=False, use_virtual
     Returns:
         str: the full path to the user data dir for this application.
     """
-    return _get_folder('user_data', app_name, app_author, version, roaming, use_virtualenv, create)[0]
+    return _get_folder(True, _FolderTypes.data, app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
 def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
@@ -106,7 +119,7 @@ def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtu
     Returns:
         str: the full path to the user config dir for this application.
     """
-    return _get_folder('user_config', app_name, app_author, version, roaming, use_virtualenv, create)[0]
+    return _get_folder(True, _FolderTypes.config, app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
 def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
@@ -134,7 +147,7 @@ def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, crea
         str: the full path to the user cache dir for this application.
 
     """
-    return _get_folder('user_cache', app_name, app_author, version, False, use_virtualenv, create)[0]
+    return _get_folder(True, _FolderTypes.cache, app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
 def user_state_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
@@ -166,7 +179,7 @@ def user_state_dir(app_name, app_author, version=None, roaming=False, use_virtua
     Returns:
         str: the full path to the user state dir for this application.
     """
-    return _get_folder('user_state', app_name, app_author, version, roaming, use_virtualenv, create)[0]
+    return _get_folder(True, _FolderTypes.state, app_name, app_author, version, roaming, use_virtualenv, create)[0]
 
 
 def user_logs_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
@@ -193,7 +206,7 @@ def user_logs_dir(app_name, app_author, version=None, use_virtualenv=True, creat
     Returns:
         str: the full path to the user log dir for this application.
     """
-    return _get_folder('user_logs', app_name, app_author, version, False, use_virtualenv, create)[0]
+    return _get_folder(True, _FolderTypes.logs, app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
 def site_data_dir(app_name, app_author, version=None, use_virtualenv=True, create=False):
@@ -227,7 +240,7 @@ def site_data_dir(app_name, app_author, version=None, use_virtualenv=True, creat
     Returns:
         str: the full path to the site data dir for this application.
     """
-    return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)[0]
+    return _get_folder(False, _FolderTypes.data, app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
 def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=False):
@@ -257,7 +270,7 @@ def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, 
     Returns:
         list: A list to the full paths for site data directories for this application.
     """
-    return _get_folder('site_data', app_name, app_author, version, False, use_virtualenv, create)
+    return _get_folder(False, _FolderTypes.data, app_name, app_author, version, False, use_virtualenv, create)
 
 
 def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
@@ -291,7 +304,7 @@ def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, cre
     Returns:
         str: the full path to the site config dir for this application.
     """
-    return _get_folder('site_config', app_name, app_author, version, False, use_virtualenv, create)[0]
+    return _get_folder(False, _FolderTypes.config, app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
 def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=True):
@@ -321,10 +334,10 @@ def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True
     Returns:
         list: A list to the full paths for site data directories for this application.
     """
-    return _get_folder('site_config', app_name, app_author, version, False, use_virtualenv, create)
+    return _get_folder(False, _FolderTypes.config, app_name, app_author, version, False, use_virtualenv, create)
 
 
-def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtualenv, create):
+def _get_folder(user, folder_type, app_name, app_author, version, roaming, use_virtualenv, create):
     """
     Get the directory corresponding to the appropriate folder type and operating system.
     The folder is returned, with the app_name, and in the case of windows app_author appended to it.
@@ -334,8 +347,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
     A list is returned. It is up to calling functions to handle the contents of this list.
 
     Args:
-        str folder_type: Folder type, must be one of
-            'user_data' | 'user_config' | 'user_state' | 'user_cache' | 'user_logs' | 'site_data' | 'site_config'
+        _FolderTypes folder_type: Folder type value.
         str app_name: Name of the app, the returned dir has os.path.basename == app_name
         str app_author: Name of app author, only used in Windows.
         str version: App version, appended to app_name
@@ -349,58 +361,61 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
         list: A list of paths.
 
     """
-    if not folder_type.startswith('site') and use_virtualenv and _in_virtualenv_folder():
-        sub_folder = folder_type.split('_')[1]  # data | config | state | log | cache
+    if user and use_virtualenv and _in_virtualenv():
+        sub_folder = folder_type.name  # data | config | state | log | cache
         paths = [os.path.join(sys.prefix, sub_folder)]
 
-    elif WINDOWS:
-        if folder_type in ['user_data', 'user_config', 'user_state']:
-            paths = [os.path.normpath(_get_win_folder(site=False, roaming=roaming, app_author=app_author))]
-        elif folder_type == 'user_cache':
-            # we'll follow the MSDN recommendation on local data, but since they're mum on caches,
-            # we'll put them in LOCAL_APPDATA/app_author/Caches.
-            path = os.path.normpath(_get_win_folder(site=False, roaming=False, app_author=app_author))
-            paths = [os.path.join(path, 'Caches')]
-        elif folder_type == 'user_logs':
-            # Similar issue as with user caches. MSDN is no help.
-            path = os.path.normpath(_get_win_folder(site=False, roaming=False, app_author=app_author))
-            paths = [os.path.join(path, 'Logs')]
-        elif folder_type in ['site_data', 'site_config']:
+    elif platform == Platform.WINDOWS:
+        if user:
+            if folder_type in [_FolderTypes.data, _FolderTypes.config, _FolderTypes.state]:
+                paths = [os.path.normpath(_get_win_folder(site=False, roaming=roaming, app_author=app_author))]
+            elif folder_type == _FolderTypes.cache:
+                # we'll follow the MSDN recommendation on local data, but since they're mum on caches,
+                # we'll put them in LOCAL_APPDATA/app_author/Caches.
+                path = os.path.normpath(_get_win_folder(site=False, roaming=False, app_author=app_author))
+                paths = [os.path.join(path, 'Caches')]
+            else:  # folder_type == _FolderTypes.logs:
+                # Similar issue as with user caches. MSDN is no help.
+                path = os.path.normpath(_get_win_folder(site=False, roaming=False, app_author=app_author))
+                paths = [os.path.join(path, 'Logs')]
+        elif folder_type in [_FolderTypes.data, _FolderTypes.config]:
             paths = [os.path.normpath(_get_win_folder(site=True, roaming=roaming, app_author=app_author))]
         else:
-            raise RuntimeError('Unknown folder type: {}'.format(folder_type))
+            raise RuntimeError('Unknown folder type: {}, user: {}'.format(folder_type.name, user))
 
-    elif MACOSX:
-        if folder_type in ['user_data', 'user_config', 'user_state']:
-            paths = [os.path.expanduser('~/Library/Application Support')]
-        elif folder_type == 'user_cache':
-            paths = [os.path.expanduser('~/Library/Caches')]
-        elif folder_type == 'user_logs':
-            paths = [os.path.expanduser('~/Library/Logs')]
-        elif folder_type in ['site_data', 'site_config']:
+    elif platform == Platform.MACOS:
+        if user:
+            if folder_type in [_FolderTypes.data, _FolderTypes.config, _FolderTypes.state]:
+                paths = [os.path.expanduser('~/Library/Application Support')]
+            elif folder_type == _FolderTypes.cache:
+                paths = [os.path.expanduser('~/Library/Caches')]
+            else:  # folder_type == _FolderTypes.logs:
+                paths = [os.path.expanduser('~/Library/Logs')]
+        elif folder_type in [_FolderTypes.data, _FolderTypes.config]:
             paths = [os.path.expanduser('/Library/Application Support')]
         else:
-            raise RuntimeError('Unknown folder type: {}'.format(folder_type))
+            raise RuntimeError('Unknown folder type: {}, user: {}'.format(folder_type.name, user))
 
-    elif LINUX:
-        if folder_type == 'user_data':
-            paths = [os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share"))]
-        elif folder_type == 'user_config':
-            paths = [os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))]
-        elif folder_type == 'user_state':
-            paths = [os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))]
-        elif folder_type == 'user_cache':
-            paths = [os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))]
-        elif folder_type == 'user_logs':
-            paths = [os.path.expanduser('~/.log')]
-        elif folder_type == 'site_data':
-            path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
-            paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
-        elif folder_type == 'site_config':
+    elif platform == Platform.POSIX:
+        if user:
+            if folder_type == _FolderTypes.data:
+                paths = [os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share"))]
+            elif folder_type == _FolderTypes.config:
+                paths = [os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))]
+            elif folder_type == _FolderTypes.state:
+                paths = [os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))]
+            elif folder_type == _FolderTypes.cache:
+                paths = [os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))]
+            else:  # folder_type == _FolderTypes.logs:
+                paths = [os.path.expanduser('~/.log')]
+        elif folder_type == _FolderTypes.data:
+                path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
+                paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
+        elif folder_type == _FolderTypes.config:
             path = os.getenv('XDG_CONFIG_DIRS', '/etc/xdg')
             paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         else:
-            raise RuntimeError('Unknown folder type: {}'.format(folder_type))
+            raise RuntimeError('Unknown folder type: {}, user: {}'.format(folder_type.name, user))
 
     else:
         raise RuntimeError('Unsupported operating system: {}'.format(sys.platform))
@@ -419,7 +434,7 @@ def _get_folder(folder_type, app_name, app_author, version, roaming, use_virtual
     return final_paths
 
 
-def _in_virtualenv_folder():
+def _in_virtualenv():
     """
     Determine if we're in a virtual env.
 
@@ -443,6 +458,10 @@ def _get_win_folder(site, roaming, app_author):
     if not isinstance(app_author, str) or app_author == '':
         raise RuntimeError('On Windows, app_author must be a non-empty string.')
 
+    # As of Windows Vista, these values have been replaced by KNOWNFOLDERID values.
+    # The CSIDL system is supported under Windows Vista, 8 and 10 for compatibility reasons,
+    # And the function SHGetFolderPath maps these values to SHGetKnownFolderID. A future version of this
+    # library will need to updated if support for CSIDL is ever dropped.
     csidl_consts = {
         "CSIDL_APPDATA": 26,
         "CSIDL_COMMON_APPDATA": 35,
