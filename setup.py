@@ -7,7 +7,7 @@ from os.path import abspath, join, dirname, realpath
 here = abspath(dirname(realpath(__file__)))
 
 
-def version(folder):
+def get_version(folder):
     with open(join(folder, 'homebase', '__init__.py')) as init_file:
         regex = """^__version__ = ['"]([^'"]*)['"]"""
         version_match = re.search(regex, init_file.read(), re.M)  # using re.M, ^ is matched to beginning of each line.
@@ -29,11 +29,11 @@ def requirements(folder):
         return []
 
 
-__version__ = version(here)
+version = get_version(here)
 
 setup(
     name='homebase',
-    version=__version__,
+    version=version,
     description='A platform independent API for paths in which applications can write data.',
     author='D-Wave Systems Inc.',
     author_email='oshklarsky@dwavesys.com',
@@ -42,5 +42,5 @@ setup(
     install_requires=requirements(here),
     license='Apache 2.0',
     url='https://github.com/dwavesystems/homebase',
-    download_url='https://github.com/dwavesys/homebase/archive/{}.tar.gz'.format(__version__)
+    download_url='https://github.com/dwavesys/homebase/archive/{}.tar.gz'.format(version)
 )
