@@ -409,8 +409,8 @@ def _get_folder(user, folder_type, app_name, app_author, version, roaming, use_v
             else:  # folder_type == _FolderTypes.logs:
                 paths = [os.path.expanduser('~/.log')]
         elif folder_type == _FolderTypes.data:
-                path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
-                paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
+            path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
+            paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         elif folder_type == _FolderTypes.config:
             path = os.getenv('XDG_CONFIG_DIRS', '/etc/xdg')
             paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
