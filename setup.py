@@ -22,6 +22,6 @@ setup(
         'enum34>=1.1.6'
     ],
     license='Apache 2.0',
-    url='https://github.com/dwavesystems/dimod',
+    url='https://github.com/dwavesystems/homebase',
     download_url='https://github.com/dwavesys/homebase/archive/{}.tar.gz'.format(__version__)
 )
