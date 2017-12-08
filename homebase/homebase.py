@@ -92,7 +92,7 @@ def user_data_dir(app_name, app_author, version=None, roaming=False, use_virtual
 
 def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
     """
-    Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
+    Return the full path to the user config dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
 
     If using a virtualenv, the path returned is :bash:`/path/to/virtualenv/config/app_name`
@@ -124,7 +124,7 @@ def user_config_dir(app_name, app_author, version=None, roaming=False, use_virtu
 
 def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
     """
-    Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
+    Return the full path to the user cache dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
 
     If using a virtualenv, the path returned is :bash:`/path/to/virtualenv/cache/app_name`
@@ -152,7 +152,7 @@ def user_cache_dir(app_name, app_author, version=None, use_virtualenv=True, crea
 
 def user_state_dir(app_name, app_author, version=None, roaming=False, use_virtualenv=True, create=True):
     """
-    Return the full path to the user data dir for this application, using a virtualenv location as a base, if it is
+    Return the full path to the user state dir for this application, using a virtualenv location as a base, if it is
     exists, and falling back to the host OS's convention if it doesn't.
 
     If using a virtualenv, the path returned is :bash:`/path/to/virtualenv/state/app_name`
@@ -409,8 +409,8 @@ def _get_folder(user, folder_type, app_name, app_author, version, roaming, use_v
             else:  # folder_type == _FolderTypes.logs:
                 paths = [os.path.expanduser('~/.log')]
         elif folder_type == _FolderTypes.data:
-                path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
-                paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
+            path = os.getenv('XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share']))
+            paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         elif folder_type == _FolderTypes.config:
             path = os.getenv('XDG_CONFIG_DIRS', '/etc/xdg')
             paths = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
