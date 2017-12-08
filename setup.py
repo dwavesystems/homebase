@@ -42,5 +42,5 @@ setup(
     install_requires=requirements(here),
     license='Apache 2.0',
     url='https://github.com/dwavesystems/homebase',
-    download_url='https://github.com/dwavesys/homebase/archive/{}.tar.gz'.format(version)
+    download_url='https://github.com/dwavesystems/homebase/archive/{}.tar.gz'.format(version)
 )
