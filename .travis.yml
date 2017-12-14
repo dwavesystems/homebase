@@ -1,49 +1,55 @@
 language: python
+
 matrix:
-  include:
-  - os: linux
-    sudo: required
-    python: '2.7'
-    env: TOXENV=py27
-  - os: linux
-    sudo: required
-    python: '3.6'
-    env: TOXENV=py36
-  - os: linux
-    sudo: required
-    python: nightly
-    env: TOXENV=pynightly
-  - os: osx
-    language: generic
-    env: TOXENV=py27
-    before_install:
-    - brew update
-    - virtualenv env -p python2
-    - source env/bin/activate
-  - os: osx
-    language: generic
-    env: TOXENV=py36
-    before_install:
-    - brew update
-    - brew install python3
-    - virtualenv env -p python3
-    - source env/bin/activate
-  - os: osx
-    language: generic
-    env: TOXENV=pynightly
+    include:
+        - os: linux
+          sudo: required
+          python: "2.7"
+          env: TOXENV=py27
+        - os: linux
+          sudo: required
+          python: "3.6"
+          env: TOXENV=py36
+        - os: linux
+          sudo: required
+          python: "nightly"
+          env: TOXENV=pynightly
+        - os: osx
+          language: generic
+          env: TOXENV=py27
+          before_install:
+            - brew update
+            - virtualenv env -p python2
+            - source env/bin/activate
+        - os: osx
+          language: generic
+          env: TOXENV=py36
+          before_install:
+            - brew update
+            - brew install python3
+            - virtualenv env -p python3
+            - source env/bin/activate
+        - os: osx
+          language: generic
+          env: TOXENV=pynightly
+
 install:
-- pip install -r requirements.txt
-- pip install .
-- pip install coveralls
+    - pip install virtualenv
+    - pip install -r requirements.txt
+    - pip install .
+    - pip install coveralls
+
 script:
 - coverage run --source=homebase -m unittest discover
+
 after_success:
 - coveralls
+
 deploy:
   provider: pypi
   user: dwtools
   password:
-    secure: FIr5DOs6cCtjaU7F6AIPQ6936Ggbq9Y7kay7QyklcoefnpNDn+q9XEpOQ1UFz2HXBnYfLyl6cn+X6QjrghzSDtQ6Opp791eUcPoTiSBdVmqrrzCWeWuCAW3U3UkTLo4ClBhskH9qFgMKkvS4qB9Nk1TfgAWtrnBxYGFf9LXbkCvvdDNycusWnwov1/U2KAFZaNSO9QI6xgROJ+1HjuFiq2t6oSPT7HBqjf9s1NbCih5CpQGaPfIfE2MJ5+LDK6+RHF98V2tpA2PCAwkA9ZgWRGSoS+aSlyPjje2xyT7yZAo8qU8ulcVTJBnpETt/yNMAVatHAykM0NaC/Be1CS5y/As4YSlJqUpUZCASJKeStajrGGy1JeP/o+r5xJiSJUmZQDCL0hd9FaOJ6jtcQpyo+Ggc8r0Oh0KB218NhiRn82oNUemi3ATdmnEW8TVQ7NKQZBCeN+YJXHWh7ks1OXIIL2jcjx0Jp0+SO83ZQGbMkfq2ved6+iL1MuX2t8NKlNi/5BQRnHt4p0amxb4+XougZTfMFqITptQk4sIa1wFiL/Wg4wsUV+KWkGn4oOGQKx7nBMvkLOomAXrSrgpTJGdm5GGyZ1OVAWs07/Zo/xSz2wSA8JdEzXL/60GLRow9MwmaMFV9S9jBrVWQyNbGEz/31BJH6jW6j06hrr8MEoJhOgk=
-  distributions: sdist bdist_wheel
+    secure: "FIr5DOs6cCtjaU7F6AIPQ6936Ggbq9Y7kay7QyklcoefnpNDn+q9XEpOQ1UFz2HXBnYfLyl6cn+X6QjrghzSDtQ6Opp791eUcPoTiSBdVmqrrzCWeWuCAW3U3UkTLo4ClBhskH9qFgMKkvS4qB9Nk1TfgAWtrnBxYGFf9LXbkCvvdDNycusWnwov1/U2KAFZaNSO9QI6xgROJ+1HjuFiq2t6oSPT7HBqjf9s1NbCih5CpQGaPfIfE2MJ5+LDK6+RHF98V2tpA2PCAwkA9ZgWRGSoS+aSlyPjje2xyT7yZAo8qU8ulcVTJBnpETt/yNMAVatHAykM0NaC/Be1CS5y/As4YSlJqUpUZCASJKeStajrGGy1JeP/o+r5xJiSJUmZQDCL0hd9FaOJ6jtcQpyo+Ggc8r0Oh0KB218NhiRn82oNUemi3ATdmnEW8TVQ7NKQZBCeN+YJXHWh7ks1OXIIL2jcjx0Jp0+SO83ZQGbMkfq2ved6+iL1MuX2t8NKlNi/5BQRnHt4p0amxb4+XougZTfMFqITptQk4sIa1wFiL/Wg4wsUV+KWkGn4oOGQKx7nBMvkLOomAXrSrgpTJGdm5GGyZ1OVAWs07/Zo/xSz2wSA8JdEzXL/60GLRow9MwmaMFV9S9jBrVWQyNbGEz/31BJH6jW6j06hrr8MEoJhOgk="
+  distributions: "sdist bdist_wheel"
   on:
     tags: true
