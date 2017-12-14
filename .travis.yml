@@ -40,7 +40,8 @@ install:
     - pip install coveralls
 
 script:
-- coverage run --source=homebase -m unittest discover
+# - coverage run --source=homebase -m unittest discover
+- ls
 
 after_success:
 - coveralls

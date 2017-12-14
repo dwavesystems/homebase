@@ -668,6 +668,7 @@ class TestHomebaseVirtualEnv(TestHomebase):
 
 
 @unittest.skipUnless(sys.platform.startswith('linux'), 'TestHomebaseLinuxXDG: Not Linux')
+@unittest.skipIf('travis' in os.path.expanduser('~'), 'Skipping travis virtualenv tests for now.')
 class TestHomebaseLinuxXDG(TestHomebase):
 
     def setUp(self):
