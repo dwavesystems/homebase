@@ -34,6 +34,7 @@ matrix:
           env: TOXENV=pynightly
 
 install:
+    - pip install virtualenv
     - pip install -r requirements.txt
     - pip install .
     - pip install coveralls
