@@ -621,6 +621,7 @@ class TestHomebase(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
+@unittest.skipIf('travis' in os.path.expanduser('~'), 'Skipping travis virtualenv tests for now.')
 class TestHomebaseVirtualEnv(TestHomebase):
 
     virtualenv_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test_venv')
