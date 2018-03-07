@@ -1,5 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/dwavesystems/homebase/badge.svg?branch=master)](https://coveralls.io/github/dwavesystems/homebase?branch=master)
 [![Build Status](https://travis-ci.org/dwavesystems/homebase.svg?branch=master)](https://travis-ci.org/dwavesystems/homebase)
+[![Documentation Status](https://readthedocs.org/projects/homebase/badge/?version=latest)](http://homebase.readthedocs.io/en/latest/?badge=latest)
 # homebase
 
 
