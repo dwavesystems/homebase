@@ -273,7 +273,7 @@ def site_data_dir_list(app_name, app_author, version=None, use_virtualenv=True, 
     return _get_folder(False, _FolderTypes.data, app_name, app_author, version, False, use_virtualenv, create)
 
 
-def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, create=True):
+def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, create=False):
     """
     Return the full path to the OS wide config dir for this application.
 
@@ -307,7 +307,7 @@ def site_config_dir(app_name, app_author, version=None, use_virtualenv=True, cre
     return _get_folder(False, _FolderTypes.config, app_name, app_author, version, False, use_virtualenv, create)[0]
 
 
-def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=True):
+def site_config_dir_list(app_name, app_author, version=None, use_virtualenv=True, create=False):
     """
     Return the list of full path to the OS wide data directories for this application.
 
