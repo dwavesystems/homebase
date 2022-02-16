@@ -41,6 +41,7 @@ setup(
     packages=find_packages(),
     install_requires=requirements(here),
     license='Apache 2.0',
+    license_files = ('LICENSE.txt'),
     url='https://github.com/dwavesystems/homebase',
     download_url='https://github.com/dwavesystems/homebase/archive/{}.tar.gz'.format(version)
 )
